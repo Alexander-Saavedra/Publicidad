@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Propuesta Digital Interactiva</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .brand-bg { background-color: var(--primary); }
+    .brand-text { color: var(--primary); }
+    .brand-border { border-color: var(--primary); }
+    .brand-accent-bg { background-color: var(--accent); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen pb-24">
+
+  <!-- BARRA DE PRUEBA INTERNA (Cambiar mostrarBarraAdmin a false en el JS cuando envíes al cliente) -->
+  <div id="admin-bar" class="bg-slate-900 border-b border-slate-800 px-3 py-2 text-xs flex flex-wrap items-center justify-between gap-2 sticky top-0 z-50">
+    <span class="text-emerald-400 font-bold">⚡ Selector de Prospecto (Vista Interna):</span>
+    <div class="flex flex-wrap gap-1">
+      <button onclick="cargarCliente('saborpersa')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">1. Sabor Persa</button>
+      <button onclick="cargarCliente('amalia')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">2. Amalia Buffet</button>
+      <button onclick="cargarCliente('asianwok')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">3. Asian Wok</button>
+      <button onclick="cargarCliente('lima')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">4. Lima</button>
+      <button onclick="cargarCliente('donceviche')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700">5. Don Ceviche</button>
+    </div>
+  </div>
+
+  <!-- CONTENEDOR MOBILE-FIRST -->
+  <main class="max-w-md mx-auto px-4 pt-6 space-y-8">
+
+    <!-- ENCABEZADO PERSONALIZADO -->
+    <section class="text-center space-y-3">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs text-slate-300">
+        <span class="w-2 h-2 rounded-full brand-bg animate-pulse"></span>
+        Auditoría y Prototipo Exclusivo
+      </div>
+      <h1 class="text-2xl font-extrabold tracking-tight">
+        Hola equipo de <span id="biz-name" class="brand-text"></span> 👋
+      </h1>
+      <p id="biz-hook" class="text-sm text-slate-400 leading-relaxed"></p>
+    </section>
+
+    <!-- DIAGNÓSTICO RÁPIDO -->
+    <section class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-slate-400">🔍 Lo que detectamos en su Instagram</h2>
+        <span id="biz-handle" class="text-xs font-mono text-slate-400"></span>
+      </div>
+      <ul id="biz-pain-points" class="space-y-2 text-sm text-slate-300"></ul>
+    </section>
+
+    <!-- SIMULADOR DE FEED DE INSTAGRAM (PROPUESTA VISUAL) -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold">✨ Así luciría su nuevo Feed</h2>
+        <span class="text-xs px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Diseño Estratégico</span>
+      </div>
+      <p class="text-xs text-slate-400">Piezas diseñadas con su identidad visual enfocadas en despertar apetito y generar clics al instante:</p>
+
+      <!-- Mockup de Perfil de IG -->
+      <div class="bg-black border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        <div class="p-4 flex items-center gap-4 border-b border-slate-900">
+          <div id="ig-avatar" class="w-14 h-14 rounded-full flex items-center justify-center font-extrabold text-lg border-2 brand-border brand-bg text-white shrink-0"></div>
+          <div class="space-y-1 text-xs">
+            <div id="ig-title" class="font-bold text-white text-sm"></div>
+            <div id="ig-bio" class="text-slate-400 leading-snug"></div>
+            <div class="text-sky-400 font-semibold">🔗 pedidos.ni/<span id="ig-slug"></span></div>
+          </div>
+        </div>
+        <!-- Cuadrícula 3 Posts -->
+        <div id="ig-grid" class="grid grid-cols-3 gap-0.5 bg-slate-900"></div>
+      </div>
+    </section>
+
+    <!-- DEMO EN VIVO: CATÁLOGO / EMBUDO A WHATSAPP -->
+    <section class="space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-base font-bold">📲 Prueben su nuevo Menú Express</h2>
+        <span class="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">Interactivo</span>
+      </div>
+      <p class="text-xs text-slate-400">Sus clientes eligen sucursal y platillos en 15 segundos y el pedido llega estructurado directo a su WhatsApp:</p>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-4">
+        <!-- Selector de Sucursal -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-400 mb-1">📍 Sucursal / Ubicación:</label>
+          <select id="branch-select" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-sm text-white focus:outline-none"></select>
+        </div>
+
+        <!-- Lista de Platillos -->
+        <div id="menu-list" class="space-y-2.5"></div>
+
+        <!-- Resumen de Pedido -->
+        <div class="pt-3 border-t border-slate-800 flex items-center justify-between">
+          <div>
+            <span class="text-xs text-slate-400 block">Total estimado:</span>
+            <span id="cart-total" class="text-lg font-extrabold text-white">C$ 0</span>
+          </div>
+          <button onclick="simularEnvioWhatsApp()" class="brand-bg text-white font-bold text-sm px-4 py-2.5 rounded-xl shadow-lg active:scale-95 transition">
+            Probar Pedido en WhatsApp →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- OFERTA DE IMPLEMENTACIÓN -->
+    <section class="bg-gradient-to-br from-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-5 space-y-3 text-center">
+      <h3 class="text-lg font-extrabold">¿Activamos este sistema para <span id="biz-name-footer" class="brand-text"></span>?</h3>
+      <p class="text-xs text-slate-400">Incluye diseño de contenido optimizado para su Instagram + su catálogo interactivo conectado a su WhatsApp listo en 48 horas.</p>
+    </section>
+
+  </main>
+
+  <!-- BOTÓN FLOTANTE DE CIERRE -->
+  <div class="fixed bottom-0 inset-x-0 bg-slate-950/90 backdrop-blur border-t border-slate-800 p-3 z-40">
+    <div class="max-w-md mx-auto flex items-center justify-between gap-3">
+      <div class="text-xs">
+        <div class="font-bold text-white">¿Te gustó el prototipo?</div>
+        <div class="text-slate-400">Agenda una llamada de 10 min</div>
+      </div>
+      <a id="cta-agency" href="#" target="_blank" class="brand-bg text-white text-xs font-bold px-4 py-3 rounded-xl shrink-0 shadow-lg">
+        Quiero esto en mi negocio 💬
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // Cambia tu número de WhatsApp aquí para recibir a los dueños interesados
+    const TU_WHATSAPP_AGENCIA = "50588888888";
+    const mostrarBarraAdmin = true;
+
+    const PROSPECTOS = {
+      saborpersa: {
+        nombre: "Sabor Persa & Pasargad",
+        handle: "@saborpersapasargad",
+        slug: "saborpersa",
+        iniciales: "SP",
+        primary: "#C59B27",
+        accent: "#E65100",
+        whatsappNegocio: "50586284444",
+        hook: "Están en una ubicación privilegiada (Zona Viva de Multicentro Las Américas), pero con solo 6 publicaciones y 1 seguidor están perdiendo decenas de pedidos a domicilio cada semana.",
+        bioPropuesta: "Auténtica cocina Iraní + Alitas, Asados y Sopas en Multicentro Las Américas ✨ Pedidos Lun-Dom 10:30am - 8:00pm 👇",
+        dolores: [
+          "❌ Tienen 1 solo seguidor y sin enlace clicable en la biografía (el cliente tiene que digitar el 8628-4444 a mano).",
+          "❌ Portadas de Reels oscuras que no hacen justicia a sus asados, sopas marineras ni a su cocina persa.",
+          "✅ Solución: Rediseño visual + Menú digital directo a su WhatsApp 8628-4444."
+        ],
+        sucursales: ["Zona Viva - Multicentro Las Américas"],
+        postsPropuestos: [
+          { tag: "ESPECIALIDAD", titulo: "Auténtico Sabor Persa", sub: "Recetas iraníes únicas en Managua", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" },
+          { tag: "PROMO ALITAS", titulo: "Alitas + Papas Crujientes", sub: "Pide por Delivery al 8628-4444", img: "https://images.unsplash.com/photo-1567620832903-9fc6debc209f?auto=format&fit=crop&w=600&q=80" },
+          { tag: "MAR Y TIERRA", titulo: "Sopa Marinera & Asados", sub: "Almuerzos todos los días desde 10:30 AM", img: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=600&q=80" }
+        ],
+        menu: [
+          { id: 1, nombre: "Combo Alitas + Papas Fritas y Salsas", precio: 280 },
+          { id: 2, nombre: "Plato de Carne Asada con Tajadas y Arroz", precio: 320 },
+          { id: 3, nombre: "Sopa Marinera Especial con Camarón", precio: 350 }
+        ]
+      },
+      amalia: {
+        nombre: "Amalia Buffet",
+        handle: "@amalia_buffet",
+        slug: "amaliabuffet",
+        iniciales: "AB",
+        primary: "#F26522",
+        accent: "#1E1E1E",
+        whatsappNegocio: "50577839938",
+        hook: "Su comida casera y buffet diario tienen un gran potencial en la zona de La Salvadorita, pero su arte del 'Menú del Día' se corta en Instagram y no tienen botón directo a WhatsApp.",
+        bioPropuesta: "🍳 Desayunos típicos | 🥘 Almuerzo Buffet | 🔥 Asados. Gasolinera Puma Salvadorita 1c al N. ¡Arma tu almuerzo del día aquí! 👇",
+        dolores: [
+          "❌ El diseño del 'Menú del Día' tiene tanto texto que se recorta en la cuadrícula de Instagram.",
+          "❌ El link de su perfil envía a Facebook en lugar de abrir el WhatsApp 7783-9938.",
+          "✅ Solución: Plantilla limpia del Menú del Día + Armador de Buffet por WhatsApp."
+        ],
+        sucursales: ["Managua - Gasolinera Puma Salvadorita, 1c al N."],
+        postsPropuestos: [
+          { tag: "MENÚ DEL DÍA", titulo: "Arma tu Almuerzo Buffet", sub: "Proteína + 2 Complementos + Bastimento + Refresco", img: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=80" },
+          { tag: "ANtojo NICA", titulo: "Enchiladas Crujientes", sub: "Crujientes por fuera, deliciosas por dentro", img: "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?auto=format&fit=crop&w=600&q=80" },
+          { tag: "DESAYUNOS", titulo: "Desayuno Típico Nica", sub: "Gallo pinto, queso frito, maduro y omelette", img: "https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=600&q=80" }
+        ],
+        menu: [
+          { id: 1, nombre: "Almuerzo del Día (Filete de Pollo Salsa Ajillo + Gallo Pinto + Tajadas)", precio: 180 },
+          { id: 2, nombre: "Almuerzo del Día (Bisteck de Res + Ensalada + Maduro Frito)", precio: 190 },
+          { id: 3, nombre: "Orden de Enchiladas Nicas Crujientes", precio: 120 }
+        ]
+      },
+      asianwok: {
+        nombre: "Asian Wok",
+        handle: "@asianwokni",
+        slug: "asianwok",
+        iniciales: "AW",
+        primary: "#B71C1C",
+        accent: "#FFD600",
+        whatsappNegocio: "",
+        hook: "Tienen 5 sucursales consolidadas en Managua, pero su Instagram tiene apenas 283 seguidores, publicaciones de fechas pasadas y ningún enlace para recibir pedidos propios sin comisiones.",
+        bioPropuesta: "🥡 Auténtica cocina asiática al wok en Managua. 📍 5 Sucursales. Pide directo a tu sucursal más cercana sin recargos 👇",
+        dolores: [
+          "❌ Solo 283 seguidores para una cadena con 5 locales (Carretera Sur, Ciudad Jardín, El Establo, Altagracia, Iván Montenegro).",
+          "❌ Feed saturado de afiches festivos viejos en vez de mostrar el wok y los platillos.",
+          "✅ Solución: Enrutador de las 5 sucursales + Catálogo propio para reducir comisiones de apps."
+        ],
+        sucursales: ["Carretera Sur", "Ciudad Jardín", "El Establo", "Altagracia", "Iván Montenegro"],
+        postsPropuestos: [
+          { tag: "RECIÉN HECHO", titulo: "Noodles & Camarones al Wok", sub: "Sabor asiático auténtico en 5 sucursales", img: "https://images.unsplash.com/photo-1585032226651-759b368d7246?auto=format&fit=crop&w=600&q=80" },
+          { tag: "COMBO FAMILIAR", titulo: "Arroz Chino + Pollo Agridulce", sub: "Pide directo a domicilio o pasa retirando", img: "https://images.unsplash.com/photo-1512058564366-18510be2db19?auto=format&fit=crop&w=600&q=80" },
+          { tag: "5 UBICACIONES", titulo: "Siempre Cerca de Vos", sub: "Carretera Sur • Ciudad Jardín • El Establo • Altagracia • Iván Montenegro", img: "https://images.unsplash.com/photo-1552611052-33e04de081de?auto=format&fit=crop&w=600&q=80" }
+        ],
+        menu: [
+          { id: 1, nombre: "Wok Especial de Noodles con Camarones y Vegetales", precio: 310 },
+          { id: 2, nombre: "Arroz Asiático Mixto al Wok", precio: 270 },
+          { id: 3, nombre: "Pollo en Salsa Asiática + Rollitos Primavera", precio: 290 }
+        ]
+      },
+      lima: {
+        nombre: "Restaurante Lima",
+        handle: "@lima.mga",
+        slug: "limamga",
+        iniciales: "LM",
+        primary: "#FF7A00",
+        accent: "#16263A",
+        whatsappNegocio: "",
+        hook: "Cuentan con la certificación de Auténtica Cocina Peruana y acaban de lanzar su Delivery Propio, pero su publicación de delivery tuvo poca interacción y aún falta un catálogo ágil para pedir en 2 clics.",
+        bioPropuesta: "🇵🇪 Auténtica Cocina Peruana Certificada en Managua | Chef @soyjaimeibarra | Lun-Dom 12M - 9PM | Reserva mesa o pide en nuestro Delivery Propio 👇",
+        dolores: [
+          "❌ Su post fijado de 'Delivery Propio' no lleva a un menú interactivo inmediato.",
+          "❌ El cliente actual debe llenar un formulario largo para reservar en vez de confirmar en 1 clic.",
+          "✅ Solución: Menú Gourmet de Delivery Propio + Reserva VIP instantánea por WhatsApp."
+        ],
+        sucursales: ["Managua - Salón Principal & Delivery Propio"],
+        postsPropuestos: [
+          { tag: "DELIVERY PROPIO", titulo: "Lima en la Puerta de tu Casa", sub: "Pide tus platos peruanos favoritos sin intermediarios", img: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=600&q=80" },
+          { tag: "CERTIFICADO", titulo: "Auténtica Cocina Peruana", sub: "Experiencia gastronómica por Chef Jaime Ibarra", img: "https://images.unsplash.com/photo-1535399831218-d5bd36d1a6b3?auto=format&fit=crop&w=600&q=80" },
+          { tag: "FAVORITO DEL CHEF", titulo: "Arroz Chaufa & Mariscos", sub: "Reserva tu mesa de Lunes a Domingo 12M - 9PM", img: "https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=600&q=80" }
+        ],
+        menu: [
+          { id: 1, nombre: "Jalea / Mariscos al Estilo Peruano", precio: 520 },
+          { id: 2, nombre: "Arroz Chaufa Especial de Res", precio: 460 },
+          { id: 3, nombre: "Reserva de Mesa VIP (Anticipo / Confirmación)", precio: 0 }
+        ]
+      },
+      donceviche: {
+        nombre: "Don Ceviche Nicaragua",
+        handle: "@doncevichenic",
+        slug: "donceviche",
+        iniciales: "DC",
+        primary: "#0288D1",
+        accent: "#003B5C",
+        whatsappNegocio: "",
+        hook: "Con 11 sucursales en Managua y los departamentos (Masaya, Granada, Estelí y Juigalpa), un solo link de WhatsApp en la biografía genera cuellos de botella para reservas de partidos y pedidos locales.",
+        bioPropuesta: "🦐 El bocado perfecto en Mariscos y Carnes. 📍 11 Sucursales en Managua, Masaya, Granada, Estelí y Juigalpa. Elige tu sucursal aquí 👇",
+        dolores: [
+          "❌ 11 sucursales de Managua y departamentos concentradas en un solo link genérico (wa.link/dphy6p).",
+          "❌ En días de partidos (Champions / Selección) o canje de Giftcards se satura una sola línea.",
+          "✅ Solución: Enrutador Inteligente por Sucursal + Reserva Express para Partidos."
+        ],
+        sucursales: [
+          "Managua - Plaza Eclipse", "Managua - Plaza España", "Managua - Camino Oriente",
+          "Managua - Plaza Isabella", "Managua - Los Robles", "Managua - Plaza La Liga",
+          "Managua - Logixplaza", "Masaya", "Granada", "Estelí", "Juigalpa"
+        ],
+        postsPropuestos: [
+          { tag: "MAR Y TIERRA", titulo: "Churrasco & Camarones", sub: "Sabor en cada bocado en nuestras 11 sucursales", img: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" },
+          { tag: "DÍA DE PARTIDO", titulo: "Reserva tu Mesa para el Partido", sub: "Cócteles, ceviches y ambiente en vivo", img: "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=600&q=80" },
+          { tag: "GIFT CARDS", titulo: "Regala o Canjea tu Giftcard", sub: "Disponible en Managua, Masaya, Granada, Estelí y Juigalpa", img: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=600&q=80" }
+        ],
+        menu: [
+          { id: 1, nombre: "Corte de Res con Camarones, Papas y Queso Frito", precio: 550 },
+          { id: 2, nombre: "Arroz con Camarones + Sangría / Margarita", precio: 420 },
+          { id: 3, nombre: "Reserva de Mesa para Partido (Sin costo)", precio: 0 }
+        ]
+      }
+    };
+
+    let clienteActual = null;
+    let carrito = {};
+
+    function cargarCliente(key) {
+      const data = PROSPECTOS[key] || PROSPECTOS.saborpersa;
+      clienteActual = data;
+      carrito = {};
+
+      // Inyectar colores de marca
+      document.documentElement.style.setProperty('--primary', data.primary);
+      document.documentElement.style.setProperty('--accent', data.accent);
+
+      // Textos principales
+      document.getElementById('biz-name').textContent = data.nombre;
+      document.getElementById('biz-name-footer').textContent = data.nombre;
+      document.getElementById('biz-hook').textContent = data.hook;
+      document.getElementById('biz-handle').textContent = data.handle;
+
+      // Puntos de dolor
+      const ul = document.getElementById('biz-pain-points');
+      ul.innerHTML = data.dolores.map(d => `<li class="leading-snug">${d}</li>`).join('');
+
+      // Mockup de Instagram
+      document.getElementById('ig-avatar').textContent = data.iniciales;
+      document.getElementById('ig-title').textContent = data.nombre;
+      document.getElementById('ig-bio').textContent = data.bioPropuesta;
+      document.getElementById('ig-slug').textContent = data.slug;
+
+      const grid = document.getElementById('ig-grid');
+      grid.innerHTML = data.postsPropuestos.map(p => `
+        <div class="relative aspect-square overflow-hidden group">
+          <img src="${p.img}" alt="${p.titulo}" class="w-full h-full object-cover brightness-75 group-hover:scale-105 transition" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent p-2 flex flex-col justify-end">
+            <span class="text-[9px] font-extrabold uppercase px-1.5 py-0.5 rounded brand-bg text-white w-fit mb-1">${p.tag}</span>
+            <p class="text-[11px] font-bold text-white leading-tight">${p.titulo}</p>
+            <p class="text-[9px] text-slate-300 leading-tight mt-0.5">${p.sub}</p>
+          </div>
+        </div>
+      `).join('');
+
+      // Sucursales
+      const select = document.getElementById('branch-select');
+      select.innerHTML = data.sucursales.map(s => `<option value="${s}">${s}</option>`).join('');
+
+      // Menú interactivo
+      renderizarMenu();
+
+      // Botón de contacto hacia tu agencia
+      const msgAgencia = encodeURIComponent(`¡Hola! Vi el prototipo que preparaste para ${data.nombre} (${data.handle}) y me interesa conocer cómo implementarlo.`);
+      document.getElementById('cta-agency').href = `https://wa.me/${TU_WHATSAPP_AGENCIA}?text=${msgAgencia}`;
+    }
+
+    function renderizarMenu() {
+      const container = document.getElementById('menu-list');
+      let total = 0;
+
+      container.innerHTML = clienteActual.menu.map(item => {
+        const cant = carrito[item.id] || 0;
+        total += cant * item.precio;
+        return `
+          <div class="flex items-center justify-between bg-slate-950 border border-slate-800/80 rounded-xl p-3 gap-2">
+            <div class="text-xs">
+              <div class="font-bold text-white">${item.nombre}</div>
+              <div class="brand-text font-semibold mt-0.5">${item.precio > 0 ? 'C$ ' + item.precio : 'Gratis / Reserva'}</div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button onclick="cambiarCantidad(${item.id}, -1)" class="w-7 h-7 rounded-lg bg-slate-800 text-white font-bold">-</button>
+              <span class="text-xs font-bold w-4 text-center">${cant}</span>
+              <button onclick="cambiarCantidad(${item.id}, 1)" class="w-7 h-7 rounded-lg brand-bg text-white font-bold">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('cart-total').textContent = `C$ ${total}`;
+    }
+
+    function cambiarCantidad(id, delta) {
+      carrito[id] = Math.max(0, (carrito[id] || 0) + delta);
+      renderizarMenu();
+    }
+
+    function simularEnvioWhatsApp() {
+      const sucursal = document.getElementById('branch-select').value;
+      const seleccionados = clienteActual.menu.filter(i => (carrito[i.id] || 0) > 0);
+
+      if (seleccionados.length === 0) {
+        alert("Selecciona al menos un platillo con el botón (+) para probar cómo llega el pedido a WhatsApp.");
+        return;
+      }
+
+      let detalle = seleccionados.map(i => `• ${carrito[i.id]}x ${i.nombre} (C$ ${i.precio * carrito[i.id]})`).join('\n');
+      let total = seleccionados.reduce((acc, i) => acc + (i.precio * carrito[i.id]), 0);
+
+      const texto = `¡Hola *${clienteActual.nombre}*! 👋\nQuiero hacer este pedido desde su nuevo Menú Digital:\n\n📍 *Sucursal:* ${sucursal}\n\n*Detalle:*\n${detalle}\n\n💰 *Total:* C$ ${total}`;
+      const telefonoDestino = clienteActual.whatsappNegocio || TU_WHATSAPP_AGENCIA;
+      window.open(`https://wa.me/${telefonoDestino}?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+
+    // Inicializar leyendo ?cliente= de la URL
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!mostrarBarraAdmin) document.getElementById('admin-bar').style.display = 'none';
+      const params = new URLSearchParams(window.location.search);
+      const clienteParam = params.get('cliente') || 'saborpersa';
+      cargarCliente(clienteParam);
+    });
+  </script>
+</body>
+</html>

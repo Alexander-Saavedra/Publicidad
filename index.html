@@ -374,12 +374,41 @@
     }
 
     // Inicializar leyendo ?cliente= de la URL
-    window.addEventListener('DOMContentLoaded', () => {
-      if (!mostrarBarraAdmin) document.getElementById('admin-bar').style.display = 'none';
+function obtenerClaveCliente() {
+      // 1. Lee si viene por query parameter (?cliente=...)
       const params = new URLSearchParams(window.location.search);
-      const clienteParam = params.get('cliente') || 'saborpersa';
-      cargarCliente(clienteParam);
+      let clave = params.get('cliente');
+
+      // 2. Si no viene en el query, revisa si viene por hash (#amalia)
+      if (!clave && window.location.hash) {
+        clave = window.location.hash.replace('#', '');
+      }
+
+      // 3. Normaliza a minúsculas y sin espacios
+      if (clave) {
+        clave = clave.toLowerCase().trim();
+      }
+
+      return PROSPECTOS[clave] ? clave : 'saborpersa';
+    }
+
+    function sincronizarVista() {
+      const clienteKey = obtenerClaveCliente();
+      cargarCliente(clienteKey);
+    }
+
+    // Inicializar al cargar
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!mostrarBarraAdmin && document.getElementById('admin-bar')) {
+        document.getElementById('admin-bar').style.display = 'none';
+      }
+      sincronizarVista();
     });
+
+    // Detectar si el usuario cambia el link o usa los botones de adelante/atrás del navegador
+    window.addEventListener('popstate', sincronizarVista);
+    window.addEventListener('hashchange', sincronizarVista);
+    
   </script>
 </body>
 </html>
